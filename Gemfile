@@ -7,4 +7,7 @@ gem "mysql2-cs-bind"
 gem "erubis"
 gem "unicorn"
 
+gem 'redis'
+
+# detele below lines before deadline
 gem 'rack-lineprof'
