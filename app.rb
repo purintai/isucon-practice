@@ -5,6 +5,7 @@ require 'tilt/erubis'
 require 'erubis'
 require 'rack-lineprof'
 require 'redis'
+require 'open3'
 
 module Isucon5
   class AuthenticationError < StandardError; end
@@ -108,10 +109,12 @@ SQL
     end
 
     def is_friend?(another_id)
-      user_id = session[:user_id]
-      query = 'SELECT COUNT(1) AS cnt FROM relations WHERE (one = ? AND another = ?) OR (one = ? AND another = ?)'
-      cnt = db.xquery(query, user_id, another_id, another_id, user_id).first[:cnt]
-      cnt.to_i > 0 ? true : false
+      # user_id = session[:user_id]
+      # query = 'SELECT COUNT(1) AS cnt FROM relations WHERE (one = ? AND another = ?) OR (one = ? AND another = ?)'
+      # cnt = db.xquery(query, user_id, another_id, another_id, user_id).first[:cnt]
+      # cnt.to_i > 0 ? true : false
+
+      redis.sismember("R_#{session[:user_id]}", another_id)
     end
 
     def is_friend_account?(account_name)
@@ -363,6 +366,9 @@ SQL
         raise Isucon5::ContentNotFound
       end
       db.xquery('INSERT INTO relations (one, another) VALUES (?,?), (?,?)', current_user[:id], user[:id], user[:id], current_user[:id])
+      redis.sadd("R_#{current_user[:id]}", user[:id])
+      redis.sadd("R_#{user[:id]}", current_user[:id])
+
       redirect '/friends'
     end
   end
@@ -372,5 +378,9 @@ SQL
     db.query("DELETE FROM footprints WHERE id > 500000")
     db.query("DELETE FROM entries WHERE id > 500000")
     db.query("DELETE FROM comments WHERE id > 1500000")
+
+    o, e, s = Open3.capture3("sudo systemctl stop redis-server.service")
+    o, e, s = Open3.capture3("sudo cp /var/lib/redis/init.rdb /var/lib/redis/dump.rdb")
+    o, e, s = Open3.capture3("sudo systemctl start redis-server.service")
   end
 end
