@@ -382,5 +382,7 @@ SQL
     o, e, s = Open3.capture3("bash -c 'sudo systemctl stop redis-server.service'")
     o, e, s = Open3.capture3("bash -c 'sudo cp /var/lib/redis/init.rdb /var/lib/redis/dump.rdb'")
     o, e, s = Open3.capture3("bash -c 'sudo systemctl start redis-server.service'")
+
+    'done'
   end
 end
