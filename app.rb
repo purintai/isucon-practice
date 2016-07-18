@@ -109,12 +109,12 @@ SQL
     end
 
     def is_friend?(another_id)
-      # user_id = session[:user_id]
-      # query = 'SELECT COUNT(1) AS cnt FROM relations WHERE (one = ? AND another = ?) OR (one = ? AND another = ?)'
-      # cnt = db.xquery(query, user_id, another_id, another_id, user_id).first[:cnt]
-      # cnt.to_i > 0 ? true : false
+       user_id = session[:user_id]
+       query = 'SELECT COUNT(1) AS cnt FROM relations WHERE (one = ? AND another = ?) OR (one = ? AND another = ?)'
+       cnt = db.xquery(query, user_id, another_id, another_id, user_id).first[:cnt]
+       cnt.to_i > 0 ? true : false
 
-      redis.sismember("R_#{session[:user_id]}", another_id)
+      #redis.sismember("R_#{session[:user_id]}", another_id)
     end
 
     def is_friend_account?(account_name)
