@@ -379,8 +379,8 @@ SQL
     db.query("DELETE FROM entries WHERE id > 500000")
     db.query("DELETE FROM comments WHERE id > 1500000")
 
-    o, e, s = Open3.capture3("sudo systemctl stop redis-server.service")
-    o, e, s = Open3.capture3("sudo cp /var/lib/redis/init.rdb /var/lib/redis/dump.rdb")
-    o, e, s = Open3.capture3("sudo systemctl start redis-server.service")
+    o, e, s = Open3.capture3("bash -c 'sudo systemctl stop redis-server.service'")
+    o, e, s = Open3.capture3("bash -c 'sudo cp /var/lib/redis/init.rdb /var/lib/redis/dump.rdb'")
+    o, e, s = Open3.capture3("bash -c 'sudo systemctl start redis-server.service'")
   end
 end
