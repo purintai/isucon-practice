@@ -223,7 +223,7 @@ SQL
     end
     friends = friends_map.map{|user_id, created_at| [user_id, created_at]}
 
-    footprints = redis.zrevrange("F_#{current_user[:id]}", 0, 9)
+    footprints = redis.zrevrange("F_#{current_user[:id]}", 0, 9, with_scores: true)
 
     locals = {
       profile: profile || {},
@@ -332,7 +332,7 @@ SQL
 
   get '/footprints' do
     authenticated!
-    footprints = redis.zrevrange("F_#{current_user[:id]}", 0, 49)
+    footprints = redis.zrevrange("F_#{current_user[:id]}", 0, 49, with_scores: true)
 
     erb :footprints, locals: { footprints: footprints }
   end
