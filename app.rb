@@ -43,7 +43,7 @@ class Isucon5::WebApp < Sinatra::Base
     end
 
     def redis
-      @redis ||= Redis.new
+      Thread.current[:redis] ||= Redis.new
     end
 
     def db
