@@ -118,7 +118,7 @@ SQL
       # cnt = db.xquery(query, user_id, another_id, another_id, user_id).first[:cnt]
       # cnt.to_i > 0 ? true : false
 
-      friends.include?(another_id)
+      friends.include?(another_id.to_s)
     end
 
     def is_friend_account?(account_name)
