@@ -96,10 +96,14 @@ SQL
       end
     end
 
+    def users
+      @users ||= {}
+    end
+
     def get_user(user_id)
-      user = db.xquery('SELECT * FROM users WHERE id = ?', user_id).first
-      raise Isucon5::ContentNotFound unless user
-      user
+      users[user_id] ||= db.xquery('SELECT * FROM users WHERE id = ?', user_id).first
+      raise Isucon5::ContentNotFound unless users[user_id]
+      users[user_id]
     end
 
     def user_from_account(account_name)
