@@ -131,8 +131,10 @@ SQL
 
     def mark_footprint(user_id)
       if user_id != current_user[:id]
-        query = 'INSERT INTO footprints (user_id,owner_id) VALUES (?,?)'
-        db.xquery(query, user_id, current_user[:id])
+        # query = 'INSERT INTO footprints (user_id,owner_id) VALUES (?,?)'
+        # db.xquery(query, user_id, current_user[:id])
+
+        redis.zadd("F_#{user_id}", current_user[:id])
       end
     end
 
@@ -221,15 +223,7 @@ SQL
     end
     friends = friends_map.map{|user_id, created_at| [user_id, created_at]}
 
-    query = <<SQL
-SELECT user_id, owner_id, DATE(created_at) AS date, MAX(created_at) AS updated
-FROM footprints
-WHERE user_id = ?
-GROUP BY user_id, owner_id, DATE(created_at)
-ORDER BY updated DESC
-LIMIT 10
-SQL
-    footprints = db.xquery(query, current_user[:id])
+    footprints = redis.zrevrange("F_#{current_user[:id]}", 0, 9)
 
     locals = {
       profile: profile || {},
@@ -338,15 +332,8 @@ SQL
 
   get '/footprints' do
     authenticated!
-    query = <<SQL
-SELECT user_id, owner_id, DATE(created_at) AS date, MAX(created_at) as updated
-FROM footprints
-WHERE user_id = ?
-GROUP BY user_id, owner_id, DATE(created_at)
-ORDER BY updated DESC
-LIMIT 50
-SQL
-    footprints = db.xquery(query, current_user[:id])
+    footprints = redis.zrevrange("F_#{current_user[:id]}", 0, 49)
+
     erb :footprints, locals: { footprints: footprints }
   end
 
