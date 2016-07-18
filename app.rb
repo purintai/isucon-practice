@@ -18,7 +18,7 @@ module Isucon5
 end
 
 class Isucon5::WebApp < Sinatra::Base
-  use Rack::Lineprof
+  use Rack::Lineprof, profile: 'app.rb'
 
   use Rack::Session::Cookie
   set :erb, escape_html: true
