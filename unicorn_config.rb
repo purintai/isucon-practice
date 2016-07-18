@@ -1,6 +1,6 @@
 worker_processes 20
 preload_app true
-listen 8080
+listen "/tmp/unicorn.sock"
 pid "/home/isucon/webapp/ruby/unicorn.pid"
 
 stderr_path "/home/isucon/webapp/ruby/log/stderr.log"
