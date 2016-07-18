@@ -134,7 +134,7 @@ SQL
         # query = 'INSERT INTO footprints (user_id,owner_id) VALUES (?,?)'
         # db.xquery(query, user_id, current_user[:id])
 
-        redis.zadd("F_#{user_id}", current_user[:id])
+        redis.zadd("F_#{user_id}", Time.now.to_i, current_user[:id])
       end
     end
 
